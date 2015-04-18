@@ -1,3 +1,7 @@
+//Make sure to name your Global Window/ Render Variable;
+SDL_Window*  = NULL;
+SDL_Render*  = NULL;
+
 CONST INT SCREEN_W = 720;
 CONST INT SCREEN_H = 480;
 
