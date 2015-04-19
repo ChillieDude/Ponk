@@ -36,7 +36,7 @@ void mBall::reset(bool ml, bool mu) {
 
 void mBall::update(Paddle& p1, Paddle& p2, float delta, float speed, int& pWins, int& cWins) {
 	//Paddles
-	if(ball.x <= p1.getX() && ball.y >= p1.getY() && ball.y + ball.h <= p1.getY() + p1.getHeight()) {
+	if(ball.x <= p1.getX()+p1.getWidth() && ball.y >= p1.getY() && ball.y + ball.h <= p1.getY() + p1.getHeight()) {
 		moving_left = false;
 		float force = p1.getForce();
 		moving_up = (force >= 0 ? false : true);
@@ -59,7 +59,7 @@ void mBall::update(Paddle& p1, Paddle& p2, float delta, float speed, int& pWins,
 		moving_up = !moving_up;
 		velY = 0;
 		ball.y += 1;
-	} else if(ball.y >= SCREEN_H) {
+	} else if(ball.y + ball.h >= SCREEN_H) {
 		moving_up = !moving_up;
 		velY = 0;
 		ball.y -= 1;
