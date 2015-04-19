@@ -3,20 +3,20 @@
 
 #include <SDL.h>
 
-class Pong {
+class Paddle {
 public:
-	Pong(int x, int y, int width, int height, const int screen_height);
-	~Pong();
+	Paddle(int x, int y, int width, int height, const int screen_height);
+	~Paddle();
 	int getX();
 	int getY();
 	int getWidth();
 	int getHeight();
+	float getForce();
 	void draw(SDL_Renderer*);
 	void moveDown(float vel);
 	void moveUp(float vel);
 private:
-	int x, y, width, height;
-	float velY;
+	float velY, force;
 	const int SCREEN_H;
 	SDL_Rect rect;
 };

@@ -11,6 +11,8 @@ public:
 	void run();
 	const int getWindowWidth();
 	const int getWindowHeight();
+	int getPlayerWins();
+	int getComputerWins();
 private:
 	void play();
 	bool init();
@@ -18,6 +20,7 @@ private:
 
 	bool running;
 	const int SCREEN_W, SCREEN_H;
+	int pWins, cWins;
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 };

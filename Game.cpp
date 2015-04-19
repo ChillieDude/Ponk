@@ -1,7 +1,8 @@
 #include "Game.h"
-#include "Pong.h"
+#include "Paddle.h"
+#include "mBall.h"
 
-Game::Game(int w, int h) : SCREEN_W(w), SCREEN_H(h), running(false) {}
+Game::Game(int w, int h) : SCREEN_W(w), SCREEN_H(h), running(false), pWins(0), cWins(0) {}
 
 Game::~Game() {
 	SDL_DestroyWindow(window);
@@ -11,6 +12,14 @@ Game::~Game() {
 	renderer = nullptr;
 
 	SDL_Quit();
+}
+
+const int Game::getWindowWidth() {
+	return SCREEN_W;
+}
+
+const int Game::getWindowHeight() {
+	return SCREEN_H;
 }
 
 void Game::run() {
@@ -56,9 +65,10 @@ void Game::play() {
 	int pong_width = 15, pong_height = SCREEN_H / 4;
 	int padding = 10;
 
-	Pong m_pongLeft(padding, SCREEN_H/2-(pong_height/2), pong_width, pong_height, SCREEN_H);
-	Pong m_pongRight(SCREEN_W-(pong_width+padding), SCREEN_H/2-(pong_height/2), pong_width, pong_height, SCREEN_H);
-	
+	Paddle m_paddleLeft(padding, SCREEN_H/2-(pong_height/2), pong_width, pong_height, SCREEN_H);
+	Paddle m_paddleRight(SCREEN_W-(pong_width+padding), SCREEN_H/2-(pong_height/2), pong_width, pong_height, SCREEN_H);
+	mBall m_ball(SCREEN_W/2-5, SCREEN_H/2-5, true, true, SCREEN_W, SCREEN_H);
+
 	Uint32 curTime = SDL_GetTicks(), lastTime;
 	float delta = 0;
 
@@ -69,17 +79,25 @@ void Game::play() {
 	while(isRunning()) {
 		lastTime = curTime;
 		curTime = SDL_GetTicks();
-		delta = (float) ((curTime - lastTime) / 1000.f);
+		delta = (float) ((curTime - lastTime) / 1000.0f);
 
 		if(state[SDL_SCANCODE_W]) {
-			m_pongLeft.moveUp(speed * delta);
+			m_paddleLeft.moveUp(speed * delta);
 		} else if(state[SDL_SCANCODE_S]) {
-			m_pongLeft.moveDown(speed * delta);
+			m_paddleLeft.moveDown(speed * delta);
 		}
 		if(state[SDL_SCANCODE_UP]) {
-			m_pongRight.moveUp(speed * delta);
+			m_paddleRight.moveUp(speed * delta);
 		} else if(state[SDL_SCANCODE_DOWN]) {
-			m_pongRight.moveDown(speed * delta);
+			m_paddleRight.moveDown(speed * delta);
+		}
+		
+		int temp_p = pWins, temp_c = cWins;
+
+		m_ball.update(m_paddleLeft, m_paddleRight, delta, SCREEN_H / 2, pWins, cWins);
+
+		if(temp_p != pWins || temp_c != cWins) {
+			m_ball.reset(true, true);
 		}
 
 		while(SDL_PollEvent(&e) != 0) {
@@ -88,13 +106,19 @@ void Game::play() {
 					running = false;
 					break;
 			}
+			switch(e.key.keysym.sym) {
+				case SDLK_ESCAPE:
+					running = false;
+					break;
+			}
 		}
 
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
 
-		m_pongLeft.draw(renderer);
-		m_pongRight.draw(renderer);
+		m_paddleLeft.draw(renderer);
+		m_paddleRight.draw(renderer);
+		m_ball.draw(renderer);
 
 		SDL_RenderPresent(renderer);
 	}
