@@ -8,7 +8,7 @@ mBall::mBall(int x, int y, bool ml, bool mu, const int SCREEN_W, const int SCREE
 	ball.w = 10;
 	ball.h = 10;
 
-	dOff = dOff = rand() % 100;//static_cast<float>(rand()) / static_cast<float>(RAND_MAX/100);
+	dOff = dOff = rand() % 100;
 }
 
 void mBall::draw(SDL_Renderer* r) {
@@ -31,7 +31,7 @@ void mBall::reset(bool ml, bool mu) {
 	moving_left = ml;
 	moving_up = mu;
 
-	dOff = rand() % 100;//static_cast<float>(rand()) / static_cast<float>(RAND_MAX/100);
+	dOff = rand() % 100;
 }
 
 void mBall::update(Paddle& p1, Paddle& p2, float delta, float speed, int& pWins, int& cWins) {
@@ -43,7 +43,7 @@ void mBall::update(Paddle& p1, Paddle& p2, float delta, float speed, int& pWins,
 
 		if(moving_up) force = -force;
 
-		dOff = 100.0f * force;//(20 + (rand() % 50) * (force*2));
+		dOff = 100.0f * force;
 	} else if(ball.x + ball.w >= p2.getX() && ball.y + ball.h >= p2.getY() && ball.y <= p2.getY() + p2.getHeight()) {
 		moving_left = true;
 		float force = p2.getForce();
