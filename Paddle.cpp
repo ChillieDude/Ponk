@@ -18,7 +18,7 @@ void Paddle::moveUp(float vel) {
 		force -= vel;
 
 	if(velY <= -1) {
-		rect.y += velY*2;
+		rect.y += velY;
 		velY = 0;
 	}
 }
