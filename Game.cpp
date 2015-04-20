@@ -85,7 +85,8 @@ void Game::play() {
 			m_paddleLeft.moveUp(speed * delta);
 		} else if(state[SDL_SCANCODE_S]) {
 			m_paddleLeft.moveDown(speed * delta);
-		}
+		} 
+
 		if(state[SDL_SCANCODE_UP]) {
 			m_paddleRight.moveUp(speed * delta);
 		} else if(state[SDL_SCANCODE_DOWN]) {

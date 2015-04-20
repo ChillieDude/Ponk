@@ -15,6 +15,7 @@ Paddle::~Paddle() {
 void Paddle::moveUp(float vel) {
 	if(rect.y <= 0) return;
 	if(velY >= 0) velY = 0;
+	if(force > 0) force = 0;
 
 	velY -= vel;
 	if(force >= -1)
@@ -29,6 +30,7 @@ void Paddle::moveUp(float vel) {
 void Paddle::moveDown(float vel) {
 	if(rect.y + rect.h >= SCREEN_H) return;
 	if(velY <= 0) velY = 0;
+	if(force < 0) force = 0;
 
 	velY += vel;
 	if(force <= 1)
