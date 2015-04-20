@@ -6,7 +6,6 @@
 class Paddle {
 public:
 	Paddle(int x, int y, int width, int height, const int screen_height);
-	~Paddle();
 	int getX();
 	int getY();
 	int getWidth();

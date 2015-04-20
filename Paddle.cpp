@@ -8,10 +8,6 @@ Paddle::Paddle(int x, int y, int w, int h, const int sh) : SCREEN_H(sh), velY(0.
 	rect.h = h;
 }
 
-Paddle::~Paddle() {
-
-}
-
 void Paddle::moveUp(float vel) {
 	if(rect.y <= 0) return;
 	if(velY >= 0) velY = 0;
@@ -22,7 +18,7 @@ void Paddle::moveUp(float vel) {
 		force -= vel;
 
 	if(velY <= -1) {
-		rect.y += velY;
+		rect.y += velY*2;
 		velY = 0;
 	}
 }
