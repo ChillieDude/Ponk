@@ -67,7 +67,7 @@ void Game::play() {
 
 	Paddle m_paddleLeft(padding, SCREEN_H/2-(pong_height/2), pong_width, pong_height, SCREEN_H);
 	Paddle m_paddleRight(SCREEN_W-(pong_width+padding), SCREEN_H/2-(pong_height/2), pong_width, pong_height, SCREEN_H);
-	mBall m_ball(SCREEN_W/2-5, SCREEN_H/2-5, true, true, SCREEN_W, SCREEN_H);
+	mBall m_ball(SCREEN_W/2-5, SCREEN_H/2-5, (rand() % 2 == 0 ? false : true), (rand() % 2 == 0 ? false : true), SCREEN_W, SCREEN_H);
 
 	Uint32 curTime = SDL_GetTicks(), lastTime;
 	float delta = 0;
@@ -98,7 +98,7 @@ void Game::play() {
 		m_ball.update(m_paddleLeft, m_paddleRight, delta, SCREEN_H / 2, pWins, cWins);
 
 		if(temp_p != pWins || temp_c != cWins) {
-			m_ball.reset(true, true);
+			m_ball.reset((rand() % 2 == 0 ? false : true), (rand() % 2 == 0 ? false : true));
 		}
 
 		while(SDL_PollEvent(&e) != 0) {
