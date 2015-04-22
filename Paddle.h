@@ -14,8 +14,9 @@ public:
 	void draw(SDL_Renderer*);
 	void moveDown(float vel);
 	void moveUp(float vel);
+	void setPosition(int x, int y);
 private:
-	float velY, force;
+	float velUp, velDown, force;
 	const int SCREEN_H;
 	SDL_Rect rect;
 };

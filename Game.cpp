@@ -1,6 +1,8 @@
 #include "Game.h"
+#include "AI.h"
 #include "Paddle.h"
 #include "mBall.h"
+#include <cstdlib>
 
 Game::Game(int w, int h) : SCREEN_W(w), SCREEN_H(h), running(false), pWins(0), cWins(0) {}
 
@@ -46,15 +48,11 @@ bool Game::init() {
 		return false;
 	}
 
-	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
 	if(!renderer) {
 		return false;
 	}
-
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-	SDL_RenderClear(renderer);
-	SDL_RenderPresent(renderer);
 
 	return true;
 }
@@ -69,47 +67,50 @@ void Game::play() {
 	Paddle m_paddleRight(SCREEN_W-(pong_width+padding), SCREEN_H/2-(pong_height/2), pong_width, pong_height, SCREEN_H);
 	mBall m_ball(SCREEN_W/2-5, SCREEN_H/2-5, (rand() % 2 == 0 ? false : true), (rand() % 2 == 0 ? false : true), SCREEN_W, SCREEN_H);
 
-	Uint32 curTime = SDL_GetTicks(), lastTime;
-	float delta = 0;
+	Uint32 curTime, lastTime = SDL_GetTicks(), passed;
 
 	const Uint8 *state = SDL_GetKeyboardState(NULL);
 
 	float speed = SCREEN_H / 3;
 
+	AI ai(SCREEN_W, SCREEN_H, EASY);
+
 	while(isRunning()) {
-		lastTime = curTime;
 		curTime = SDL_GetTicks();
-		delta = (float) ((curTime - lastTime) / 1000.0f);
+		passed = curTime - lastTime;
 
-		if(state[SDL_SCANCODE_W]) {
-			m_paddleLeft.moveUp(speed * delta);
-		} else if(state[SDL_SCANCODE_S]) {
-			m_paddleLeft.moveDown(speed * delta);
-		} 
+		if(passed > 0) {
+			lastTime = curTime;
 
-		if(state[SDL_SCANCODE_UP]) {
-			m_paddleRight.moveUp(speed * delta);
-		} else if(state[SDL_SCANCODE_DOWN]) {
-			m_paddleRight.moveDown(speed * delta);
+			float delta = passed / 1000.0f;
+
+			if(state[SDL_SCANCODE_W]) {
+				m_paddleLeft.moveUp(speed * delta);
+			} else if(state[SDL_SCANCODE_S]) {
+				m_paddleLeft.moveDown(speed * delta);
+			}
+
+			int temp_p = pWins, temp_c = cWins;
+
+			m_ball.update(m_paddleLeft, m_paddleRight, delta, SCREEN_H, pWins, cWins);
+
+			if(temp_p != pWins || temp_c != cWins) {
+				m_ball.reset((rand() % 2 == 0 ? false : true), (rand() % 2 == 0 ? false : true));
+			}
+
+			ai.update(m_paddleRight, m_ball, speed * delta);
 		}
-		
-		int temp_p = pWins, temp_c = cWins;
-
-		m_ball.update(m_paddleLeft, m_paddleRight, delta, SCREEN_H / 2, pWins, cWins);
-
-		if(temp_p != pWins || temp_c != cWins) {
-			m_ball.reset((rand() % 2 == 0 ? false : true), (rand() % 2 == 0 ? false : true));
-		}
-
 		while(SDL_PollEvent(&e) != 0) {
 			switch(e.type) {
 				case SDL_QUIT:
 					running = false;
 					break;
-			}
-			switch(e.key.keysym.sym) {
-				case SDLK_ESCAPE:
-					running = false;
+				case SDL_KEYDOWN:
+					switch(e.key.keysym.sym) {
+						case SDLK_ESCAPE:
+							running = false;
+							break;
+					}
 					break;
 			}
 		}

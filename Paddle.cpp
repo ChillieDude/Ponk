@@ -1,7 +1,7 @@
 #include "Paddle.h"
 #include <iostream>
 
-Paddle::Paddle(int x, int y, int w, int h, const int sh) : SCREEN_H(sh), velY(0.0), force(0.0) {
+Paddle::Paddle(int x, int y, int w, int h, const int sh) : SCREEN_H(sh), velUp(0.0), velDown(0.0), force(0.0) {
 	rect.x = x;
 	rect.y = y;
 	rect.w = w;
@@ -10,32 +10,38 @@ Paddle::Paddle(int x, int y, int w, int h, const int sh) : SCREEN_H(sh), velY(0.
 
 void Paddle::moveUp(float vel) {
 	if(rect.y <= 0) return;
-	if(velY >= 0) velY = 0;
 	if(force > 0) force = 0;
 
-	velY -= vel;
+	velUp -= vel;
 	if(force >= -1)
 		force -= vel;
 
-	if(velY <= -1) {
-		rect.y += velY;
-		velY = 0;
+	float temp = -velUp;
+	if((int)temp > 0) {
+		rect.y -= temp;
+		velUp = 0;
 	}
 }
 
 void Paddle::moveDown(float vel) {
 	if(rect.y + rect.h >= SCREEN_H) return;
-	if(velY <= 0) velY = 0;
 	if(force < 0) force = 0;
 
-	velY += vel;
+	velDown += vel;
 	if(force <= 1)
 		force += vel;
 
-	if(velY >= 1) {
-		rect.y += velY*2;
-		velY = 0;
+	if((int) velDown > 0) {
+		rect.y += velDown+1;
+		velDown = 0;
 	}
+
+
+}
+
+void Paddle::setPosition(int x, int y) {
+	rect.x = x;
+	rect.y = y;
 }
 
 void Paddle::draw(SDL_Renderer* r) {
